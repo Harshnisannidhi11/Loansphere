@@ -4,7 +4,7 @@ A modern web-based loan management system designed to simplify loan applications
 
 ## 🚀 Live Demo
 
-[LoanSphere]([https://loansphere-one.vercel.app/](https://loansphere-one.vercel.app/))
+[LoanSphere](https://loansphere-one.vercel.app/)
 
 ## 📌 Features
 
@@ -110,9 +110,9 @@ npx playwright test
 
 ## 🔐 Environment Variables
 
-Create a `.env.production` or `.env` file locally and configure the required environment variables.
+Create a `.env` or `.env.production` file locally and configure the required environment variables.
 
-Do **not** commit environment files containing sensitive credentials.
+Do not commit environment files containing sensitive credentials.
 
 ## 🌐 Deployment
 
