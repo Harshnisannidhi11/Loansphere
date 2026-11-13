@@ -1,0 +1,317 @@
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
+import { useTheme } from '../../contexts/ThemeContext';
+import GoogleAuthButton from '../../components/GoogleAuthButton/GoogleAuthButton';
+import ThemeIcon from '../../components/ThemeIcon/ThemeIcon';
+import './Register.css';
+
+const Register = () => {
+    const { register, googleLogin, completeGoogleRegistration } = useAuth();
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    // If redirected from login page's Google button with no account:
+    const initialGoogleData = location.state?.googleData || null;
+    const [googleData, setGoogleData] = useState(initialGoogleData);
+
+    const [form, setForm] = useState({
+        name: initialGoogleData?.name || '',
+        email: initialGoogleData?.email || '',
+        phone: '',
+        password: '',
+        confirm: '',
+        role: 'borrower'
+    });
+    const [error, setError] = useState('');
+    const [success, setSuccess] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const { theme, toggleTheme } = useTheme();
+
+    const handleChange = (e) => {
+        setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
+        setError('');
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError('');
+
+        const { name, email, phone, password, confirm, role } = form;
+
+        if (!name.trim() || !email.trim() || !role || (!googleData && !password) || (!googleData && !confirm)) {
+            setError('All required fields must be filled.');
+            return;
+        }
+        if (name.trim().length < 2) {
+            setError('Full name must be at least 2 characters.');
+            return;
+        }
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            setError('Enter a valid email address.');
+            return;
+        }
+        if (!googleData && password.length < 6) {
+            setError('Password must be at least 6 characters.');
+            return;
+        }
+        if (!googleData && password !== confirm) {
+            setError('Passwords do not match.');
+            return;
+        }
+        if (password && password !== confirm) {
+            setError('Passwords do not match.');
+            return;
+        }
+
+        setLoading(true);
+        let result;
+
+        if (googleData) {
+            // Advanced Google Signup Flow
+            result = await completeGoogleRegistration({
+                ...googleData,
+                phone,
+                role,
+                password
+            });
+        } else {
+            // Manual Signup Flow
+            result = await register(name, email, password, role);
+        }
+
+        setLoading(false);
+
+        if (result.success) {
+            setSuccess(true);
+            if (googleData && result.user?.role) {
+                // Google registration logs the user in immediately — go to dashboard
+                setTimeout(() => navigate(`/${result.user.role}`, { replace: true }), 2200);
+            } else {
+                // Manual registration — user must log in separately
+                setTimeout(() => navigate('/login'), 2200);
+            }
+        } else {
+            setError(result.message);
+        }
+    };
+
+    const handleGoogleSuccess = (response) => {
+        googleLogin(response.credential).then(res => {
+            if (res.success && res.needsRegistration) {
+                // User verified via Google but doesn't exist yet, show extra fields
+                setGoogleData(res.googleData);
+                setForm(prev => ({
+                    ...prev,
+                    name: res.googleData.name,
+                    email: res.googleData.email
+                }));
+                setError('Please complete your profile details below.');
+            } else if (res.success) {
+                // Valid existing user, directly log them in from the register page
+                const userRole = res.user?.role || 'borrower';
+                const targetDashboard = `/${userRole}`;
+                navigate(targetDashboard, { replace: true });
+            } else {
+                setError(res.message);
+            }
+        });
+    };
+
+    return (
+        <div className="register-container">
+            <div className="register-card">
+              <div className="register-card-inner">
+                {/* Header */}
+                <div className="register-header">
+                    <div className="register-logo-row">
+                        <Link to="/home" className="register-logo">
+                            <span className="register-logo-icon">▲</span>
+                            <span className="register-logo-text">LoanSphere</span>
+                        </Link>
+                        <div className="register-top-actions">
+                            <button
+                                type="button"
+                                onClick={toggleTheme}
+                                className="auth-theme-toggle"
+                                aria-label="Toggle theme"
+                                title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+                            >
+                                <ThemeIcon theme={theme} />
+                            </button>
+                            <Link to="/home" className="register-home-link">← Home</Link>
+                        </div>
+                    </div>
+                    <h1 className="register-title">Create an account</h1>
+                    <p className="register-subtitle">Join as a borrower or lender — free to start.</p>
+                </div>
+
+
+                {/* Success state */}
+                {success ? (
+                    <div className="register-success" role="alert">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" />
+                        </svg>
+                        <div>
+                            <strong>Account created!</strong>
+                            <span> Redirecting you to login…</span>
+                        </div>
+                    </div>
+                ) : (
+                    <form className="register-form" onSubmit={handleSubmit} noValidate>
+                        {/* Error */}
+                        {error && (
+                            <div className="register-error" role="alert">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
+                                </svg>
+                                {error}
+                            </div>
+                        )}
+
+                        <GoogleAuthButton onSuccess={handleGoogleSuccess} text="continue_with" />
+
+                        <div className="login-divider" style={{ textAlign: 'center', margin: '1rem 0', color: 'var(--text-muted)' }}>
+                            <span>or register with email</span>
+                        </div>
+
+                        {/* Role selector */}
+                        <div className="register-role-tabs" role="group" aria-label="Select account type">
+                            {['borrower', 'lender'].map(r => (
+                                <button
+                                    key={r}
+                                    type="button"
+                                    className={`role-tab${form.role === r ? ' active' : ''}`}
+                                    onClick={() => setForm(prev => ({ ...prev, role: r }))}
+                                >
+                                    <span className="role-tab-icon">{r === 'borrower' ? '🏠' : '💼'}</span>
+                                    <span className="role-tab-label">{r === 'borrower' ? 'Borrower' : 'Lender'}</span>
+                                    <span className="role-tab-desc">{r === 'borrower' ? 'Apply for loans' : 'Fund borrowers'}</span>
+                                </button>
+                            ))}
+                        </div>
+
+                        {/* Fields */}
+                        <div className="register-fields">
+                            <div className="register-field">
+                                <label htmlFor="reg-name">Full Name</label>
+                                <input
+                                    id="reg-name"
+                                    name="name"
+                                    type="text"
+                                    autoComplete="name"
+                                    placeholder="e.g. Alice Johnson"
+                                    value={form.name}
+                                    onChange={handleChange}
+                                    disabled={loading || !!googleData}
+                                />
+                            </div>
+                            <div className="register-field">
+                                <label htmlFor="reg-email">Email Address</label>
+                                <input
+                                    id="reg-email"
+                                    name="email"
+                                    type="email"
+                                    autoComplete="email"
+                                    placeholder="you@example.com"
+                                    value={form.email}
+                                    onChange={handleChange}
+                                    disabled={loading || !!googleData}
+                                />
+                            </div>
+
+                            {/* Additional Field: Phone Number */}
+                            {googleData && (
+                                <div className="register-field">
+                                    <label htmlFor="reg-phone">Phone Number (Required)</label>
+                                    <input
+                                        id="reg-phone"
+                                        name="phone"
+                                        type="tel"
+                                        autoComplete="tel"
+                                        placeholder="e.g. +1 555-0123"
+                                        value={form.phone}
+                                        onChange={handleChange}
+                                        disabled={loading}
+                                        required
+                                    />
+                                </div>
+                            )}
+
+                            <div className="register-row">
+                                <div className="register-field">
+                                    <label htmlFor="reg-password">
+                                        {googleData ? 'Password (Optional)' : 'Password'}
+                                    </label>
+                                    <input
+                                        id="reg-password"
+                                        name="password"
+                                        type="password"
+                                        autoComplete="new-password"
+                                        placeholder="Min. 6 characters"
+                                        value={form.password}
+                                        onChange={handleChange}
+                                        disabled={loading}
+                                    />
+                                </div>
+                                <div className="register-field">
+                                    <label htmlFor="reg-confirm">Confirm Password</label>
+                                    <input
+                                        id="reg-confirm"
+                                        name="confirm"
+                                        type="password"
+                                        autoComplete="new-password"
+                                        placeholder="Repeat password"
+                                        value={form.confirm}
+                                        onChange={handleChange}
+                                        disabled={loading}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Submit */}
+                        <button
+                            type="submit"
+                            className="register-btn"
+                            disabled={loading}
+                        >
+                            {loading ? 'Creating account…' : `Create ${form.role === 'borrower' ? 'Borrower' : 'Lender'} Account`}
+                        </button>
+
+                        {/* Footer link */}
+                        <p className="register-login-link">
+                            Already have an account?{' '}
+                            <Link to="/login">Sign in</Link>
+                        </p>
+                    </form>
+                )}
+              </div>
+            </div>
+
+            {/* Side info panel */}
+            <div className="register-side">
+                <div className="register-side-content">
+                    <h2>The smart way to borrow and lend.</h2>
+                    <ul className="register-benefits">
+                        <li>
+                            <span className="benefit-icon">⚡</span>
+                            <div><strong>Instant Applications</strong><p>Browse competitive offers and apply in seconds.</p></div>
+                        </li>
+                        <li>
+                            <span className="benefit-icon">🔒</span>
+                            <div><strong>Role-Based Security</strong><p>Every account is scoped with strict access controls.</p></div>
+                        </li>
+                        <li>
+                            <span className="benefit-icon">📊</span>
+                            <div><strong>Real-time Dashboard</strong><p>Track loans, payments, and activity live.</p></div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default Register;

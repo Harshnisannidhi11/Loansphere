@@ -1,0 +1,401 @@
+/* ─── Register Page ─────────────────────────────────────────── */
+.register-container {
+    display: flex;
+    min-height: 100vh;
+    background-color: var(--bg-primary);
+}
+
+/* ─── Left card (form) ─── */
+.register-card {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    background-color: var(--bg-primary);
+    border-right: 1px solid var(--border-light);
+    overflow-y: auto;
+}
+
+.register-card-inner {
+    width: 100%;
+    max-width: 440px;
+    margin: auto;
+    padding: 40px 36px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ─── Right side panel ─── */
+.register-side {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 36px;
+    background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+}
+
+.register-side-content {
+    max-width: 340px;
+}
+
+.register-side-content h2 {
+    font-size: 1.375rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    line-height: 1.35;
+    margin-bottom: 24px;
+    letter-spacing: -0.025em;
+}
+
+.register-benefits {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.register-benefits li {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.benefit-icon {
+    font-size: 1.125rem;
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+.register-benefits strong {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+}
+
+.register-benefits p {
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+    line-height: 1.45;
+    margin: 0;
+}
+
+/* ─── Header ─── */
+.register-header {
+    margin-bottom: 24px;
+}
+
+.register-logo-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+/* Groups the theme toggle + home link together on the right */
+.register-top-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.auth-theme-toggle {
+    width: 30px;
+    height: 30px;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--border-light);
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    font-size: 0.875rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-fast);
+    padding: 0;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.auth-theme-toggle:hover {
+    background-color: var(--bg-hover);
+    border-color: var(--border-medium);
+    transform: scale(1.08);
+}
+
+.register-logo {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    text-decoration: none;
+}
+
+.register-home-link {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+}
+
+.register-home-link:hover {
+    color: var(--text-primary);
+}
+
+.register-logo-icon {
+    font-size: 1.1rem;
+    font-weight: 900;
+    color: var(--brand-primary);
+}
+
+.register-logo-text {
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+}
+
+.register-title {
+    font-size: 1.375rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin: 0 0 4px;
+    letter-spacing: -0.02em;
+}
+
+.register-subtitle {
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+/* ─── Role tabs ─── */
+.register-role-tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 18px;
+}
+
+.role-tab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    padding: 10px 8px;
+    border: 1.5px solid var(--border-light);
+    border-radius: var(--radius-md);
+    background-color: var(--bg-secondary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    text-align: center;
+}
+
+.role-tab:hover {
+    border-color: var(--border-active);
+    background-color: var(--bg-hover);
+}
+
+.role-tab.active {
+    border-color: var(--brand-primary);
+    background-color: var(--bg-hover);
+}
+
+[data-theme='dark'] .role-tab.active {
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.role-tab-icon {
+    font-size: 1rem;
+}
+
+.role-tab-label {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.role-tab-desc {
+    font-size: 0.6875rem;
+    color: var(--text-tertiary);
+}
+
+/* ─── Form ─── */
+.register-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.register-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.register-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.register-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.register-field label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.register-field input {
+    padding: 8px 12px;
+    border: 1px solid var(--border-medium);
+    border-radius: var(--radius-md);
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    font-size: 0.8125rem;
+    font-family: var(--font-sans);
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    outline: none;
+    width: 100%;
+    box-sizing: border-box;
+    height: 36px;
+}
+
+.register-field input::placeholder {
+    color: var(--text-tertiary);
+}
+
+.register-field input:focus {
+    border-color: var(--brand-primary);
+    box-shadow: 0 0 0 2px rgba(9, 9, 11, 0.06);
+}
+
+[data-theme='dark'] .register-field input:focus {
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.08);
+}
+
+.register-field input:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ─── Submit button ─── */
+.register-btn {
+    width: 100%;
+    padding: 9px;
+    background-color: var(--brand-primary);
+    color: var(--text-inverse);
+    border: 1px solid var(--brand-primary);
+    border-radius: var(--radius-md);
+    font-size: 0.875rem;
+    font-weight: 600;
+    font-family: var(--font-sans);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    margin-bottom: 12px;
+}
+
+.register-btn:hover:not(:disabled) {
+    opacity: 0.88;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+}
+
+.register-btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+[data-theme='dark'] .register-btn {
+    background-color: #ffffff;
+    color: #09090b;
+    border-color: #ffffff;
+}
+
+[data-theme='dark'] .register-btn:hover:not(:disabled) {
+    background-color: #e4e4e7;
+}
+
+/* ─── Error & Success ─── */
+.register-error {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 9px 12px;
+    margin-bottom: 12px;
+    background-color: var(--danger-bg);
+    color: var(--danger-text);
+    border: 1px solid var(--danger);
+    border-radius: var(--radius-md);
+    font-size: 0.7813rem;
+    font-weight: 500;
+}
+
+.register-success {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background-color: var(--success-bg);
+    color: var(--success-text);
+    border: 1px solid #22c55e;
+    border-radius: var(--radius-md);
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+.register-success strong {
+    font-weight: 700;
+}
+
+/* ─── Footer link ─── */
+.register-login-link {
+    text-align: center;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.register-login-link a {
+    color: var(--text-primary);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.register-login-link a:hover {
+    text-decoration: underline;
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 860px) {
+    .register-side {
+        display: none;
+    }
+
+    .register-card {
+        flex: 1;
+        border-right: none;
+        padding: 32px 24px;
+        max-width: 420px;
+        margin: 0 auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .register-row {
+        grid-template-columns: 1fr;
+    }
+
+    .register-card {
+        padding: 24px 16px;
+    }
+}
