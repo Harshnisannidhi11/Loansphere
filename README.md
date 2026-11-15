@@ -4,7 +4,7 @@ A modern web-based loan management system designed to simplify loan applications
 
 ## 🚀 Live Demo
 
-[LoanSphere](https://https://loansphere-lime.vercel.app//)
+[LoanSphere](https://loansphere-lime.vercel.app/)
 
 ## 📌 Features
 
